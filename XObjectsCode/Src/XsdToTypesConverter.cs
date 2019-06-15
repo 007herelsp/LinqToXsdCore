@@ -6,7 +6,9 @@ using System.Xml.Schema;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 // using Xml.Fxt;
 
@@ -918,10 +920,21 @@ namespace Xml.Schema.Linq.CodeGen
             return textProperty;
         }
 
-
         private ClrPropertyInfo BuildProperty(XmlSchemaElement elem, bool fromBaseType)
         {
             string identifierName = localSymbolTable.AddLocalElement(elem);
+
+            // this block of code creates a more sensible property name for (recursive) XSD elements
+            // or types (they can be children of themselves)
+            var possibleRecursiveTypeMatch = Regex.Match(identifierName, @"([\d]+$)");
+            if (possibleRecursiveTypeMatch.Success && 
+                possibleRecursiveTypeMatch.Captures.Count == 1) {
+
+                var numbersToRemove = possibleRecursiveTypeMatch.Groups.Cast<Group>().First().Value;
+                identifierName = identifierName.Replace(numbersToRemove, string.Empty);
+                if (localSymbolTable.SymbolsList.Contains(identifierName))
+                    identifierName = $"Sub{identifierName}";
+            }
 
             XmlSchemaType schemaType = elem.ElementSchemaType;
             XmlQualifiedName schemaTypeName = schemaType.QualifiedName;

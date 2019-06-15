@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Xml.Serialization;
 using System.Globalization;
+using System.Linq;
 
 namespace Xml.Schema.Linq.CodeGen
 {
@@ -125,7 +126,8 @@ namespace Xml.Schema.Linq.CodeGen
         {
             identifierName = CodeIdentifier.MakeValid(identifierName);
             if (isKeyword(identifierName))
-                return "@" + identifierName;
+                identifierName = "@" + identifierName;
+
             return identifierName;
         }
 
@@ -232,6 +234,15 @@ namespace Xml.Schema.Linq.CodeGen
         Hashtable qNameToSymbol;
         List<AnonymousType> anonymousTypes;
 
+        internal IReadOnlyList<string> SymbolsList
+        {
+            get {
+                return qNameToSymbol.Cast<DictionaryEntry>()
+                    .ToDictionary(k => ((XmlQualifiedName) k.Key).Name, v => (string)v.Value)
+                    .Select(kvp => kvp.Key).ToList();
+            }
+        }
+
         public void Init(XmlSchemaElement element)
         {
             Init(element.QualifiedName.Name);
@@ -270,7 +281,7 @@ namespace Xml.Schema.Linq.CodeGen
             if (identifierName != null)
                 return identifierName;
             identifierName = NameGenerator.MakeValidIdentifier(element.QualifiedName.Name);
-            identifierName = getSymbol(identifierName, Constants.LocalElementConflictSuffix);
+            identifierName = GetSymbol(identifierName, Constants.LocalElementConflictSuffix);
             symbolToQName.Add(identifierName.ToUpper(CultureInfo.InvariantCulture), element.QualifiedName);
             qNameToSymbol.Add(element.QualifiedName, identifierName);
             return identifierName;
@@ -279,7 +290,7 @@ namespace Xml.Schema.Linq.CodeGen
         public string AddAttribute(XmlSchemaAttribute attribute)
         {
             string identifierName = NameGenerator.MakeValidIdentifier(attribute.QualifiedName.Name);
-            identifierName = getSymbol(identifierName, Constants.LocalAttributeConflictSuffix);
+            identifierName = GetSymbol(identifierName, Constants.LocalAttributeConflictSuffix);
             symbolToQName.Add(identifierName.ToUpper(CultureInfo.InvariantCulture), attribute.QualifiedName);
             return identifierName;
         }
@@ -309,7 +320,7 @@ namespace Xml.Schema.Linq.CodeGen
             foreach (AnonymousType at in anonymousTypes)
             {
                 ClrTypeReference typeReference = at.typeRefence;
-                string typeIdentifier = getSymbol(at.identifier, Constants.LocalTypeSuffix);
+                string typeIdentifier = GetSymbol(at.identifier, Constants.LocalTypeSuffix);
                 symbolToQName.Add(typeIdentifier.ToUpper(CultureInfo.InvariantCulture), XmlQualifiedName.Empty);
                 typeReference.Name = typeIdentifier;
                 at.identifier = typeIdentifier;
@@ -332,13 +343,13 @@ namespace Xml.Schema.Linq.CodeGen
         {
             // not making valid. Assuming this has already been done. 
             string outputSymbol = null;
-            outputSymbol = getSymbol(identifierName, String.Empty);
+            outputSymbol = GetSymbol(identifierName, String.Empty);
             symbolToQName.Add(outputSymbol.ToUpper(CultureInfo.InvariantCulture), identifierName);
 
             return outputSymbol;
         }
 
-        private string getSymbol(string identifierName, string suffix)
+        internal string GetSymbol(string identifierName, string suffix)
         {
             int id = 0;
             string symbol = identifierName;
