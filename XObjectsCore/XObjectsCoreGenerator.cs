@@ -74,14 +74,17 @@ namespace Xml.Schema.Linq
             if (settings == null) settings = new LinqToXsdSettings();
 
             var xmlReader = XmlReader.Create(xsdFilePath, new XmlReaderSettings {
-                DtdProcessing = DtdProcessing.Parse
+                DtdProcessing = DtdProcessing.Parse,
+                CloseInput = true
             });
 
-            var schemaSet = xmlReader.ToXmlSchemaSet();
+            using (xmlReader) {
+                var schemaSet = xmlReader.ToXmlSchemaSet();
 
-            var codeWriter = Generate(schemaSet, settings);
+                var codeWriter = Generate(schemaSet, settings);
 
-            return new KeyValuePair<string, TextWriter>(xsdFilePath, codeWriter);
+                return new KeyValuePair<string, TextWriter>(xsdFilePath, codeWriter);
+            }
         }
 
         /// <summary>
@@ -130,6 +133,7 @@ namespace Xml.Schema.Linq
         /// <returns></returns>
         public static Dictionary<string, TextWriter> Generate(IEnumerable<string> schemaFiles)
         {
+            // xsd file paths are keys, the FileInfo's to their config files are values
             var dictOfSchemasAndTheirConfigs = schemaFiles.Select(s => new KeyValuePair<string, FileInfo>(s,
                                                                new FileInfo($"{s}.config")))
                                                            .ToDictionary(k => k.Key, v => v.Value);
