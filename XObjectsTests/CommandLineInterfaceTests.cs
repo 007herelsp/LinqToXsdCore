@@ -5,7 +5,6 @@ using NUnit.Framework;
 
 namespace Xml.Schema.Linq.Tests
 {
-    [TestFixture]
     public class CommandLineInterfaceTests
     {
         private static readonly DirectoryInfo SchemasFolder = new DirectoryInfo(@".\Schemas");
@@ -54,7 +53,7 @@ namespace Xml.Schema.Linq.Tests
             Assert.IsNotNull(_copyOfSchemasFolder);
             Assert.IsTrue(_copyOfSchemasFolder.Exists);
             
-            var programResult = LinqToXsd.Program.Main(new[] {"config", "-e", _copyOfSchemasFolder.FullName});
+            var programResult = LinqToXsd.Program.Main(new[] {"config", _copyOfSchemasFolder.FullName, "-e"});
             Assert.IsTrue(programResult == 0);
 
             configFiles = _copyOfSchemasFolder.GetFiles("*.config", SearchOption.AllDirectories);
