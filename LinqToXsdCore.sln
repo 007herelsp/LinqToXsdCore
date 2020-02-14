@@ -18,6 +18,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		RELEASENOTES.md = RELEASENOTES.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XObjectsCoreGenerator", "XObjectsCoreGenerator\XObjectsCoreGenerator.csproj", "{79C9B0A0-17B6-44E1-9823-F0C1186A19D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XObjectsCoreGeneratorTests", "XObjectsCoreGeneratorTests\XObjectsCoreGeneratorTests.csproj", "{63214ABA-9257-4505-AB4F-8B3F617C1F0E}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		XObjectsCode\XObjectsCode.projitems*{34ac3718-d2dc-48ab-becc-f00a87e910c2}*SharedItemsImports = 13
@@ -43,6 +47,14 @@ Global
 		{5BA935F4-E5A4-4679-8F55-3E875C797C54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BA935F4-E5A4-4679-8F55-3E875C797C54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BA935F4-E5A4-4679-8F55-3E875C797C54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79C9B0A0-17B6-44E1-9823-F0C1186A19D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79C9B0A0-17B6-44E1-9823-F0C1186A19D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79C9B0A0-17B6-44E1-9823-F0C1186A19D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79C9B0A0-17B6-44E1-9823-F0C1186A19D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63214ABA-9257-4505-AB4F-8B3F617C1F0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63214ABA-9257-4505-AB4F-8B3F617C1F0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63214ABA-9257-4505-AB4F-8B3F617C1F0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63214ABA-9257-4505-AB4F-8B3F617C1F0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
