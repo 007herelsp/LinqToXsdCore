@@ -114,9 +114,8 @@ namespace Xml.Schema.Linq
                 throw new ArgumentNullException("typeManager");
             }
 
-            XTypedElement
-                xoSubType = GetAnnotation(t,
-                    xe); //Try getting back as the type first, optimized for the cases where xsi:type cannot appear
+            //Try getting back as the type first, optimized for the cases where xsi:type cannot appear
+            XTypedElement xoSubType = GetAnnotation(t, xe); 
             if (xoSubType == null)
             {
                 //Try xsi:type and lookup in the typeDictionary
@@ -146,7 +145,13 @@ namespace Xml.Schema.Linq
                     throw new InvalidOperationException("Cannot cast XElement to an abstract type");
                 }
 
-                ConstructorInfo constrInfo = clrType.GetConstructor(System.Type.EmptyTypes);
+                // get public or instance
+                var exactBinding = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+                ConstructorInfo constrInfo = clrType.GetConstructor(exactBinding, null, Type.EmptyTypes, null);
+                if (constrInfo == null) {
+                    throw new TypeAccessException($"There is no public/internal parameter-less constructor for type:  {clrType.FullName}");
+                }
+
                 xoSubType = (XTypedElement) constrInfo.Invoke(null);
                 xoSubType.Untyped = xe;
                 xe.AddAnnotation(new XTypedElementAnnotation(xoSubType));
@@ -507,6 +512,11 @@ namespace Xml.Schema.Linq
 
         internal static T ParseValue<T>(string value, XElement element, XmlSchemaDatatype datatype)
         {
+            if (datatype.TypeCode == XmlTypeCode.AnyAtomicType && value is T)
+            {
+                return (T) (value as object);
+            }
+
             if (datatype.TypeCode == XmlTypeCode.QName || datatype.TypeCode == XmlTypeCode.NCName)
             {
                 return (T) datatype.ParseValue(value, NameTable, new XNamespaceResolver(element));
