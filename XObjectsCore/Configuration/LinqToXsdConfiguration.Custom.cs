@@ -128,8 +128,7 @@ namespace Xml.Schema.Linq
             }
 
             foreach (var udn in namespacesToRead.Distinct(new XAttributeValueEqualityComparer())) {
-                var uriToClrNamespaceValue =
-                    Regex.Replace(udn.Value.Replace("https", "").Replace("http", ""), @"[\W]+", ".").Trim('.');
+                var uriToClrNamespaceValue = udn.Value.ConvertUriToClrNamespace();
                 var newNamespace = Namespace.New(udn.Value, uriToClrNamespaceValue);
                 egConfig.Namespaces.Namespace.Add(newNamespace);
             }

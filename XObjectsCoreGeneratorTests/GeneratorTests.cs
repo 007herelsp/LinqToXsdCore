@@ -1,4 +1,6 @@
+using System;
 using NUnit.Framework;
+using W3C.XSD;
 
 namespace Xml.Schema.Code.Tests
 {
@@ -12,7 +14,8 @@ namespace Xml.Schema.Code.Tests
         [Test]
         public void Test1()
         {
-            Assert.Pass();
+            var schema = new schema() { targetNamespace = new Uri("https://github.com/Kinnara/ModernWpf/wiki/FlipView") };
+            var d = ExampleA.A(schema);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Xml.Schema.Linq.Extensions
 {
@@ -69,5 +70,17 @@ namespace Xml.Schema.Linq.Extensions
         /// <returns></returns>
         public static string Except(this string theString, string exception) 
             => theString.Replace(exception, string.Empty);
+
+        /// <summary>
+        /// Converts a URL or URI into a compilable CLR-namespace value.
+        /// </summary>
+        /// <param name="uriString"></param>
+        /// <returns></returns>
+        public static string ConvertUriToClrNamespace(this string uriString)
+        {
+            var uriToClrNamespaceValue = Regex.Replace(uriString.Replace("https", "")
+                .Replace("http", ""), @"[\W]+", ".").Trim('.');
+            return uriToClrNamespaceValue;
+        }
     }
 }
